@@ -1,4 +1,4 @@
-package com.example.face_rolling.sample.src.main.java.io.github.boguszpawlowski.composecalendar.sample
+package com.example.face_rolling.sample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -27,7 +27,6 @@ import androidx.navigation.compose.rememberNavController
 import io.github.boguszpawlowski.composecalendar.sample.CustomComponentsSample
 import io.github.boguszpawlowski.composecalendar.sample.CustomSelectionSample
 
-import io.github.boguszpawlowski.composecalendar.sample.SelectableCalendarSample
 import io.github.boguszpawlowski.composecalendar.sample.StaticCalendarSample
 import io.github.boguszpawlowski.composecalendar.sample.ViewModelSample
 import io.github.boguszpawlowski.composecalendar.sample.WeekCalendarSample

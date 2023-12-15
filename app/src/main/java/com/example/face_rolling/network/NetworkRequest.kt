@@ -1,14 +1,12 @@
 package com.example.face_rolling.network
 
 import com.example.face_rolling.bean.PhotoBean
+import com.example.face_rolling.bean.RecognizeBean
+import com.example.face_rolling.bean.TeamFileBean
+import com.example.face_rolling.bean.UserBean
 import com.example.face_rolling.bean.VerificationBean
 import okhttp3.MultipartBody
 import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
-import kotlin.coroutines.suspendCoroutine
 
 object NetworkRequest {
 
@@ -17,33 +15,66 @@ object NetworkRequest {
      */
     private val service = ServiceCreator.create(ApiService::class.java)
 
-    //通过await()函数将getNews()函数也声明成挂起函数。使用协程
-    suspend fun getEpidemicNews() = service.login("hyk","123456").await()
+    /*
+    登录注册的方法
+     */
+    fun login(
+        account: String,
+        password: String
+    ): Call<UserBean> = service.login(account, password)
 
-    //通过await()函数将getNews()函数也声明成挂起函数。使用协程
-    fun uploadPhoto(body: MultipartBody.Part): Call<PhotoBean> = service.takePhoto(body)
+    fun getVerification(phone: String): Call<VerificationBean> = service.getVerification(phone)
 
-    fun getVerification(): Call<VerificationBean> = service.getVerification("18663114530")
+    fun register(
+        phone: String,
+        verification: String,
+        password1: String,
+        password2: String,
+        name: String
+    ) : Call<UserBean> = service.register(phone, verification, password1, password2, name)
+
+
+    /*
+    团队的方法
+     */
+    fun creatTeam(name: String, teammateString: String): Call<TeamFileBean> =
+        service.creatTeam(name, teammateString)
+
+    fun creatTeamByFile(name: String,file:MultipartBody.Part): Call<TeamFileBean> =
+        service.creatTeamByFile(name,file)
+
+
+    fun connectImageToPerson(user_id: Int, avatar_file: MultipartBody.Part): Call<PhotoBean> =
+        service.connectImageToPerson(avatar_file, user_id)
+
+    fun faceRecognize(
+        together_image: MultipartBody.Part,
+        team_id: Int
+    ): Call<RecognizeBean> = service.FaceReconize(together_image, team_id)
+
+
+    fun getTeamInfo(
+        team_id: Int
+    ): Call<UserBean> = service.getTeamInfo(team_id)
 
 
 
     /**
-     * Retrofit网络返回处理
+     * 用connectImageToPerson
      */
-    private suspend fun <T> Call<T>.await(): T = suspendCoroutine {
-        enqueue(object : Callback<T> {
-            //正常返回
-            override fun onResponse(call: Call<T>, response: Response<T>) {
-                val body = response.body()
-                if (body != null) it.resume(body)
-                else it.resumeWithException(RuntimeException("response body is null"))
-            }
+    fun uploadPhoto(body: MultipartBody.Part): Call<PhotoBean> = service.takePhoto(body)
 
-            //异常返回
-            override fun onFailure(call: Call<T>, t: Throwable) {
-                it.resumeWithException(t)
-            }
-        })
-    }
+
+
+
+    /*
+    我的
+     */
+    fun getPersonalInfor(id: Int): Call<UserBean> = service.getPersonalInfor(id)
+
+
+
+
+
 
 }

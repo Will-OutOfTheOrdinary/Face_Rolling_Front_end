@@ -1,12 +1,19 @@
 package com.example.face_rolling.bean
 
-import android.provider.SettingsSlicesContract.BASE_URI
+import com.example.face_rolling.network.Constant.BASE_URL
+
 
 class PhotoBean() {
-    private val avatarUri: String? = null
-    private val message: String? = null
-    private val status = 0
-    private var avatarUriString  = ""
+     val avatarUri: String? = null
+     val message: String? = null
+    val status: Int = 0
+     var avatarUriString  = ""
         get() {
-            return "$BASE_URI$avatarUri"}
+            return "$BASE_URL$avatarUri"}
+
+    override fun toString(): String {
+        return "PhotoBean(avatarUri=$avatarUri, message=$message, status=$status, avatarUriString='$avatarUriString')"
+    }
+
+
 }

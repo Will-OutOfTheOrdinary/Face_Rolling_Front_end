@@ -42,90 +42,69 @@ import com.example.face_rolling.ui.preLog.Login
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(viewModel: MyViewModel) {
-
     var search by remember { mutableStateOf("") }
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(16.dp)) {
             Text(text = "首页")
+            Spacer(modifier = Modifier.width(16.dp))
             OutlinedTextField(
                 value = search,
-                onValueChange = {
-                    search = it
-                },
+                onValueChange = { search = it },
                 placeholder = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-//                        modifier = Modifier.height(20.dp)
-                    ) {
-                        Text(text = "搜索行程",)
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_magnifier_small),
-                            contentDescription = null
-                        )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = "搜索行程", modifier = Modifier.padding(end = 8.dp))
+                        Icon(painter = painterResource(id = R.drawable.icon_magnifier_small), contentDescription = null)
                     }
                 },
                 maxLines = 1,
                 shape = CircleShape,
                 textStyle = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(0.dp).padding(40.dp,10.dp).height(60.dp)
+                modifier = Modifier.weight(1f)
             )
         }
-        Text(text = "欢迎使用人脸识别签到系统")
-
-        Text(text = "现在是2023年8月21日9:41 您今天的行程有")
-
-        LazyColumn() {
-            itemsIndexed(viewModel.courseList){index, item ->
+        Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
+            Text(text = "欢迎使用人脸识别签到系统")
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(text = "现在是2023年8月21日9:41，您今天的行程有")
+        }
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            itemsIndexed(viewModel.courseList) { index, item ->
                 CourseShow(item)
             }
-
         }
-
-
     }
-
 }
 
 @Composable
 fun CourseShow(course: Course) {
     Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Image(painter = painterResource(id = course.avatar), contentDescription = null)
-        Column(verticalArrangement = Arrangement.SpaceEvenly) {
+        Spacer(modifier = Modifier.width(16.dp))
+        Column(modifier = Modifier.weight(1f)) {
             Text(text = course.name.toString())
             Text(text = course.getPeriod.toString())
-
         }
-        Spacer(modifier = Modifier.width(60.dp))
-        IconButton(onClick = {
-
-        },Modifier.width(65.dp)) {
+        IconButton(onClick = {}, Modifier.width(65.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = "去点名", maxLines = 1, modifier = Modifier.padding(5.dp))
-                Icon(
-                    painter = painterResource(id = R.drawable.icon_right_arrow),
-                    contentDescription = null
-                )
+                Icon(painter = painterResource(id = R.drawable.icon_right_arrow), contentDescription = null)
             }
-
-
         }
-
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun viewHome() {
-    var viewModel: MyViewModel = viewModel()
+    val viewModel: MyViewModel = viewModel()
     Surface(modifier = Modifier.fillMaxSize()) {
         Home(viewModel = viewModel)
     }
 }
+
