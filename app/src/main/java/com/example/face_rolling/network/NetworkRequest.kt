@@ -5,6 +5,7 @@ import com.example.face_rolling.bean.RecognizeBean
 import com.example.face_rolling.bean.TeamFileBean
 import com.example.face_rolling.bean.UserBean
 import com.example.face_rolling.bean.VerificationBean
+import com.example.face_rolling.data.User
 import okhttp3.MultipartBody
 import retrofit2.Call
 
@@ -44,7 +45,7 @@ object NetworkRequest {
         service.creatTeamByFile(name,file)
 
 
-    fun connectImageToPerson(user_id: Int, avatar_file: MultipartBody.Part): Call<PhotoBean> =
+    fun connectImageToPerson(user_id: Int, avatar_file: MultipartBody.Part): Call<UserBean> =
         service.connectImageToPerson(avatar_file, user_id)
 
     fun faceRecognize(
@@ -57,12 +58,6 @@ object NetworkRequest {
         team_id: Int
     ): Call<UserBean> = service.getTeamInfo(team_id)
 
-
-
-    /**
-     * 用connectImageToPerson
-     */
-    fun uploadPhoto(body: MultipartBody.Part): Call<PhotoBean> = service.takePhoto(body)
 
 
 

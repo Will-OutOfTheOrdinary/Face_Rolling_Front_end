@@ -19,9 +19,7 @@ interface ApiService {
     /*
     首页
      */
-    @Multipart
-    @POST("takePhoto")
-    fun takePhoto(@Part file: MultipartBody.Part): Call<PhotoBean>
+
 
     @FormUrlEncoded
     @POST("addCourse")
@@ -85,7 +83,7 @@ interface ApiService {
     fun connectImageToPerson(
         @Part file: MultipartBody.Part,
         @Part("person_id") id: Int
-    ): Call<PhotoBean>
+    ): Call<UserBean>
 
     /**
      * 人脸识别签到的方法

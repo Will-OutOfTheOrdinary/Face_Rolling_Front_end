@@ -19,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,6 +53,8 @@ val TAG: String = "tag"
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Login(viewModel: MyViewModel, sharedPreferencesHelper: SharedPreferencesHelper) {
+
+
 
     var account by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -103,24 +106,29 @@ fun Login(viewModel: MyViewModel, sharedPreferencesHelper: SharedPreferencesHelp
                                 call: Call<UserBean>,
                                 response: Response<UserBean>
                             ) {
-
+                                Log.d(TAG, "onResponse: $response")
                                 if (response.isSuccessful) {
                                     val bean = response.body()
+                                    Log.d(TAG, "onResponse: ${bean.toString()}")
+
                                     //存储个人信息
-                                    sharedPreferencesHelper.saveData(
-                                        "me",
-                                        Gson().toJson(bean?.data)
-                                    )
+                                        sharedPreferencesHelper.saveData(
+                                            "me",
+                                            Gson().toJson(bean?.data)
+                                        )
 
                                     if (bean?.message == "success") {
                                         toastUtils.show("登录成功")
                                         sharedPreferencesHelper.saveData("ifCanLogin", "true")
+                                        Log.d(TAG, "onResponse: success")
+                                        viewModel.ifLoginAuto =true
                                         viewModel.ifCanLogin = true
                                     }
                                 }
                             }
 
                             override fun onFailure(call: Call<UserBean>, t: Throwable) {
+                                toastUtils.show("网络请求失败")
                                 t.printStackTrace()
                             }
                         })

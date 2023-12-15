@@ -23,6 +23,7 @@ class MyViewModel : ViewModel() {
     var selectedTab by mutableIntStateOf(0)
 
     var ifCanLogin by mutableStateOf(false)
+    var ifLoginAuto by mutableStateOf(false)
 
     var selectedPersonTab by mutableIntStateOf(0)
 

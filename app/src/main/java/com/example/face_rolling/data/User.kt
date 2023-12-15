@@ -10,7 +10,7 @@ open class User(
     var account: String,//账号
     @DrawableRes var avatar: Int = R.drawable.avatar_default,
     var password:String ?=null,
-    var avatarUri: String? = null,
+    var avatarUrl: String? = null,
     var gender: String? = null,
     var region: String? = null,
     var phone: String? = null,
@@ -44,7 +44,7 @@ open class User(
     }
 
     override fun toString(): String {
-        return "User(id=$id, name='$name', account='$account', avatar=$avatar, password=$password, avatarUri=$avatarUri, gender=$gender, region=$region, phone=$phone, email=$email, joinInTeam=$joinInTeam, createTeam=$createTeam)"
+        return "User(id=$id, name='$name', account='$account', avatar=$avatar, password=$password, avatarUri=$avatarUrl, gender=$gender, region=$region, phone=$phone, email=$email, joinInTeam=$joinInTeam, createTeam=$createTeam)"
     }
 
 

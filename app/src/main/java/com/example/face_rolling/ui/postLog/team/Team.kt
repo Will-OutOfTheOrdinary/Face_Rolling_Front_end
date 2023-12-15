@@ -55,42 +55,44 @@ fun Team(viewModel: MyViewModel, navController: NavHostController) {
     val sharedPreferencesHelper = SharedPreferencesHelper.getInstance(LocalContext.current)
     val gson = Gson()
 
-    LaunchedEffect(Unit) {
-        // 在 Composable 访问期间启动协程
-        val call = NetworkRequest.getPersonalInfor(
-            gson.fromJson(
-                sharedPreferencesHelper.getData(
-                    "me",
-                    User.MeJson
-                ),
-                User::class.java
-            ).id
-        )
-        call.enqueue(object : Callback<UserBean> {
-            override fun onResponse(call: Call<UserBean>, response: Response<UserBean>) {
-                val string = response.body()
-                if (response.isSuccessful) {
-                    if (string?.status == 200) {
-                        User.Me = string.data!!
-                        if (string.data.joinInTeam.isNotEmpty()) {
-                            viewModel.teamList = string.data.joinInTeam.toMutableList()
+
+        LaunchedEffect(Unit) {
+            // 在 Composable 访问期间启动协程
+            val call = NetworkRequest.getPersonalInfor(
+                gson.fromJson(
+                    sharedPreferencesHelper.getData(
+                        "me",
+                        User.MeJson
+                    ),
+                    User::class.java
+                ).id
+            )
+            call.enqueue(object : Callback<UserBean> {
+                override fun onResponse(call: Call<UserBean>, response: Response<UserBean>) {
+                    val string = response.body()
+                    if (response.isSuccessful) {
+                        if (string?.status == 200) {
+                            User.Me = string.data!!
+                            if (string.data.joinInTeam.isNotEmpty()) {
+                                viewModel.teamList = string.data.joinInTeam.toMutableList()
+                            }
                         }
                     }
                 }
-            }
 
-            override fun onFailure(call: Call<UserBean>, t: Throwable) {
+                override fun onFailure(call: Call<UserBean>, t: Throwable) {
+                }
+            })
 
-            }
-        })
+
     }
+
     Column {
         TopTeamBar(ifCreate.value) { ifCreate.value = !ifCreate.value }
 
         if (ifCreate.value) {
             CreateNewTeam()
         }
-
         TeamListShow(viewModel, navController)
     }
 }
@@ -167,7 +169,7 @@ fun AbsentDataShow(userAbsentData: Team) {
 
         LazyColumn(modifier = Modifier.height(40.dp)) {
             items(userAbsentData.late) { item ->
-                Text(text = item.name)
+                Text(text = item)
             }
         }
     }

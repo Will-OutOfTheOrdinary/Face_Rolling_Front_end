@@ -9,17 +9,22 @@ import java.util.concurrent.TimeUnit
 object ServiceCreator {
 
 
-    private fun getRetrofit(): Retrofit =
-        Retrofit.Builder()
+    private fun getRetrofit(): Retrofit {
+        val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(20, TimeUnit.MINUTES) // 连接超时时间为 2 分钟
+            .readTimeout(20, TimeUnit.MINUTES) // 读取超时时间为 2 分钟
+            .writeTimeout(20, TimeUnit.MINUTES) // 写入超时时间为 2 分钟
+            .build()
+
+        return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(
-                OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS)
-                    .readTimeout(20, TimeUnit.SECONDS)
-                    .writeTimeout(20, TimeUnit.SECONDS)
-                    .build()
+               okHttpClient
             )
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
 
     fun <T> create(serviceClass: Class<T>): T = getRetrofit().create(serviceClass)
 

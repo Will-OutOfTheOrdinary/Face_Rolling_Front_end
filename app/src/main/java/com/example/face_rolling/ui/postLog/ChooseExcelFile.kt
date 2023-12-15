@@ -30,9 +30,11 @@ import java.io.File
 
 @Composable
 fun ExcelFileUploadButton(onFileSelected: (Uri) -> Unit) {
+    val toastUtils = ToastUtils.getInstance(LocalContext.current)
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         // 当用户选择文件后执行此代码块
         onFileSelected.invoke(uri!!)
+        toastUtils.show("选择了文件")
     }
 
     Button(
@@ -51,8 +53,6 @@ fun ChooseExcelFileScreen() {
     var selectedFileUri by remember { mutableStateOf<Uri?>(null) }
 
     Column {
-        // 其他内容...
-
 
         ExcelFileUploadButton { uri ->
             selectedFileUri = uri
@@ -63,9 +63,6 @@ fun ChooseExcelFileScreen() {
             Text(text = "已选择的Excel文件: ${selectedFileUri.toString()}")
             file = selectedFileUri!!.toFile()
 
-        }
-
-        if (file != null) {
             val requestBody =
                 RequestBody.create("application/vnd.ms-excel".toMediaTypeOrNull(), file!!)
             val body = MultipartBody.Part.createFormData(
@@ -96,7 +93,8 @@ fun ChooseExcelFileScreen() {
             })
         }
         else{
-
+            toastUtils.show("空")
+//
         }
 
     }

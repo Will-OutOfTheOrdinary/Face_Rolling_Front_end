@@ -11,7 +11,8 @@ class Team(
     @DrawableRes var avatar: Int = R.drawable.avatar_team,
     var avatarUri: String? = null,
     var percent: String? =null,
-    var late: List<User> = mutableListOf<User>(),
+//    var late: List<User> = mutableListOf<User>(),
+    var late: List<String> = mutableListOf<String>(),
 
 )
 {

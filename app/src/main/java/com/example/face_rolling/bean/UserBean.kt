@@ -9,4 +9,7 @@ data class UserBean(
     val status: Int = 0,
 ) {
 
+    override fun toString(): String {
+        return "UserBean(data=$data, message=$message, status=$status)"
+    }
 }

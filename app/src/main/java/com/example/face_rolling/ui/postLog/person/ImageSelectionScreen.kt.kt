@@ -19,9 +19,12 @@ import androidx.core.content.FileProvider
 import com.example.face_rolling.MyViewModel
 import com.example.face_rolling.bean.PhotoBean
 import com.example.face_rolling.bean.RecognizeBean
+import com.example.face_rolling.bean.UserBean
 import com.example.face_rolling.data.User.Companion.Me
 import com.example.face_rolling.network.NetworkRequest
+import com.example.face_rolling.store.SharedPreferencesHelper
 import com.example.face_rolling.util.ToastUtils
+import com.google.gson.Gson
 
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -71,7 +74,7 @@ fun ImageSelectionScreen(viewModel: MyViewModel) {
                     // 从相册选择图片成功，处理图片
                     // 这里可以将图片文件传给后端
 
-                    val requestBody = RequestBody.create("image/jpg".toMediaTypeOrNull(), imageFile)
+//                    val requestBody = RequestBody.create("image/jpg".toMediaTypeOrNull(), imageFile)
 
                     upImage(context, viewModel, imageFile)
                 }
@@ -94,7 +97,6 @@ fun ImageSelectionScreen(viewModel: MyViewModel) {
                 )
             )
         }) {
-            toastUtils.show("no")
             Text("选择照片")
         }
     }
@@ -140,27 +142,13 @@ private fun getRealPathFromUri(context: Context, uri: Uri): String? {
     }
 }
 
-//        AsyncImage(
-//            model =
-//            if (currentPhotoPath != null) Uri.parse(currentPhotoPath) else {
-////                "https://ts1.cn.mm.bing.net/th/id/R-C.23034dbcaded6ab4169b9514f76f51b5?rik=mSGADwV9o%2fteUA&riu=http%3a%2f%2fpic.bizhi360.com%2fbbpic%2f40%2f9640_1.jpg&ehk=RYei4n5qyNCPVysJmE2a3WhxSOXqGQMGJcvWBmFyfdg%3d&risl=&pid=ImgRaw&r=0"
-//                "${BASE_URL}images/158.png"
-//            },
-//            contentDescription = null,
-//            modifier = Modifier
-//                .width(48.dp)
-//                .height(48.dp)
-//                .clip(CircleShape)
-//                .placeholder(
-//                    visible = false,
-//                    color = Color(231, 234, 239, 255),
-//                    highlight = PlaceholderHighlight.shimmer(),
-//                ),
-//            contentScale = ContentScale.Crop,
-//        )
+
 
 fun upImage(context: Context, viewModel: MyViewModel, imageFile: File) {
+    val sharedPreferencesHelper = SharedPreferencesHelper.getInstance(context)
+
     val toastUtils = ToastUtils.getInstance(context)
+    //人脸识别进行签到
     if (viewModel.upImageMode == FACE_RECOGNIZE) {
         val requestBody = RequestBody.create("image/jpg".toMediaTypeOrNull(), imageFile)
         val body = MultipartBody.Part.createFormData(
@@ -182,12 +170,12 @@ fun upImage(context: Context, viewModel: MyViewModel, imageFile: File) {
                         if (string!!.data != null) {
                             if (string!!.status == 200) {
                                 toastUtils.show("上传成功")
+                                toastUtils.show("缺席+${string.data?.late.toString()}")
+
                             } else if (string!!.status == 404) {
                                 toastUtils.show("没有人头信息")
-
                             }
                             viewModel.userAbsentData = string.data!!
-
                         }
 
                     } else {
@@ -201,29 +189,36 @@ fun upImage(context: Context, viewModel: MyViewModel, imageFile: File) {
                 }
             })
     } else {
+        //图像绑定
         val requestBody = RequestBody.create("image/jpg".toMediaTypeOrNull(), imageFile)
         val body = MultipartBody.Part.createFormData(
-            "photo",
+            "image",
             imageFile.name,
             requestBody
         )
         val call = NetworkRequest.connectImageToPerson(Me.id, body)
-        call.enqueue(object : Callback<PhotoBean> {
-            override fun onResponse(call: Call<PhotoBean>, response: Response<PhotoBean>) {
+        call.enqueue(object : Callback<UserBean> {
+            override fun onResponse(call: Call<UserBean>, response: Response<UserBean>) {
                 if (response.isSuccessful) {
-
                     val string = response.body()
-                    Log.d("tag", "onResponse: " + string.toString())
-                    toastUtils.show("上传成功")
+                    if (string!!.status == 200) {
+                        sharedPreferencesHelper.saveData("me", Gson().toJson(string!!.data))
+                        Me = string.data!!
+                        toastUtils.show("上传成功")
+                    }
+                    else{
+                        toastUtils.show("上传失败")
+
+                    }
 
                 } else {
-                    toastUtils.show("上传失败")
+                    toastUtils.show("响应失败")
                 }
             }
 
-            override fun onFailure(call: Call<PhotoBean>, t: Throwable) {
+            override fun onFailure(call: Call<UserBean>, t: Throwable) {
+                t.printStackTrace()
                 toastUtils.show("网络请求失败")
-
             }
 
         })

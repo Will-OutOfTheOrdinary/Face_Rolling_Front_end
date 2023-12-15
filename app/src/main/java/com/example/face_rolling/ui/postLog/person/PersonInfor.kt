@@ -39,7 +39,7 @@ fun PersonInfor(user: User) {
 
 @Composable
 fun Information(user: User) {
-    var infor: List<String> = mutableListOf("昵称","性别","地区","手机号","邮箱","","","",)
+    var infor: List<String> = mutableListOf("昵称","性别","地区","手机号","邮箱")
     Column(){
         InforItem(user = user, p = User.Property.Name)
         }
