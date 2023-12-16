@@ -68,16 +68,26 @@ fun WeBottomBar(selected: Int, onSelectedChanged: (Int) -> Unit) {
                         onSelectedChanged(2)
                     }
             )
-            TabItem(
-                R.drawable.icon_message,
-                "通知",
-                if (selected == 3) LightBlue else Color.Gray,
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable {
-                        onSelectedChanged(3)
-                    }
-            )
+//            TabItem(
+//                R.drawable.icon_message,
+//                "通知",
+//                if (selected == 3) LightBlue else Color.Gray,
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .clickable {
+//                        onSelectedChanged(3)
+//                    }
+//            )
+//            TabItem(
+//                R.drawable.icon_person,
+//                "个人",
+//                if (selected == 4) LightBlue else Color.Gray,
+//                modifier = Modifier
+//                    .weight(1f)
+//                    .clickable {
+//                        onSelectedChanged(4)
+//                    }
+//            )
             TabItem(
                 R.drawable.icon_person,
                 "个人",

@@ -44,7 +44,7 @@ import com.example.face_rolling.ui.preLog.Login
 fun Home(viewModel: MyViewModel) {
     var search by remember { mutableStateOf("") }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize().padding(10.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(16.dp)) {
             Text(text = "首页")
             Spacer(modifier = Modifier.width(16.dp))
@@ -66,7 +66,7 @@ fun Home(viewModel: MyViewModel) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
             Text(text = "欢迎使用人脸识别签到系统")
             Spacer(modifier = Modifier.height(16.dp))
-            Text(text = "现在是2023年8月21日9:41，您今天的行程有")
+            Text(text = "现在是 ${viewModel.today}，您今天的行程有")
         }
         LazyColumn(modifier = Modifier.weight(1f)) {
             itemsIndexed(viewModel.courseList) { index, item ->
@@ -92,7 +92,7 @@ fun CourseShow(course: Course) {
         }
         IconButton(onClick = {}, Modifier.width(65.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = "去点名", maxLines = 1, modifier = Modifier.padding(5.dp))
+//                Text(text = "去点名", maxLines = 1, modifier = Modifier.padding(5.dp))
                 Icon(painter = painterResource(id = R.drawable.icon_right_arrow), contentDescription = null)
             }
         }

@@ -1,11 +1,13 @@
 package com.example.face_rolling.ui.postLog.team
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,17 +40,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.face_rolling.R
+import com.example.face_rolling.bean.TeamSearchBean
 import com.example.face_rolling.bean.UserBean
 import com.example.face_rolling.data.User
 import com.example.face_rolling.network.NetworkRequest
 import com.example.face_rolling.store.SharedPreferencesHelper
 import com.example.face_rolling.ui.postLog.person.FACE_RECOGNIZE
+import com.example.face_rolling.util.ToastUtils
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-@SuppressLint("MutableCollectionMutableState")
+@SuppressLint("MutableCollectionMutableState", "SuspiciousIndentation")
 @Composable
 fun Team(viewModel: MyViewModel, navController: NavHostController) {
     val ifCreate = remember { mutableStateOf(false) }
@@ -110,6 +114,7 @@ fun TeamListShow(viewModel: MyViewModel, navController: NavHostController) {
 
 @Composable
 fun TeamItem(item: Team, navController: NavHostController, viewModel: MyViewModel) {
+    val toastUtils = ToastUtils.getInstance(LocalContext.current)
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -142,9 +147,47 @@ fun TeamItem(item: Team, navController: NavHostController, viewModel: MyViewMode
                     modifier = Modifier.size(16.dp)
                 )
             }
+//            var ifMemberList = remember { false}
+
+            //查看团队成员
             IconButton(
-                onClick = { /*TODO*/ },
-                modifier = Modifier.size(32.dp)
+                onClick = {
+                    val call = NetworkRequest.getTeamInfo(item.id)
+                    Log.d("tag", "TeamItem: ${item.id}")
+                    call.enqueue(object : Callback<TeamSearchBean> {
+                        override fun onResponse(
+                            call: Call<TeamSearchBean>,
+                            response: Response<TeamSearchBean>
+                        ) {
+                            Log.d("tag", "onResponse: $response")
+                            if (response.isSuccessful) {
+                                val string = response.body()
+                                Log.d("tag", "onResponse: $string")
+                                if (string != null) {
+                                    if (string.status == 200) {
+                                        viewModel.teamMemberList = string.data!!.members!!
+                                        toastUtils.show("成员显示")
+
+                                    }
+                                    else{
+                                        toastUtils.show("成员显示失败")
+
+                                    }
+                                }
+                            }
+                        }
+
+                        override fun onFailure(call: Call<TeamSearchBean>, t: Throwable) {
+                            toastUtils.show("网络请求失败")
+                            t.printStackTrace()
+
+                        }
+                    })
+//                    ifMemberList = true
+                    navController.navigate("team_list_show")
+
+                },
+                modifier = Modifier.size(32.dp),
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.icon_right_arrow),
@@ -164,10 +207,13 @@ fun TeamItem(item: Team, navController: NavHostController, viewModel: MyViewMode
 
 @Composable
 fun AbsentDataShow(userAbsentData: Team) {
-    Column(Modifier.padding(vertical = 16.dp, horizontal = 8.dp)) {
+    Column(
+        Modifier
+            .padding(vertical = 16.dp, horizontal = 8.dp)
+            .height(150.dp)) {
         Text(text = "Percent: ${userAbsentData.percent}", modifier = Modifier.fillMaxWidth())
 
-        LazyColumn(modifier = Modifier.height(40.dp)) {
+        LazyColumn(modifier = Modifier.fillMaxHeight()) {
             items(userAbsentData.late) { item ->
                 Text(text = item)
             }
@@ -253,49 +299,3 @@ fun CreateNewTeam() {
         }
     }
 }
-
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun CreateNewTeam() {
-//    Surface(
-//        shadowElevation = 3.dp,
-//        tonalElevation = 3.dp,
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(30.dp)
-//            .clip(RoundedCornerShape(20.dp))
-//    ) {
-//        var teamName by remember { mutableStateOf("") }
-//
-//        Column(Modifier.padding(20.dp)) {
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                modifier = Modifier.padding(0.dp, 30.dp)
-//            ) {
-//                Text(text = "团队名字")
-//                OutlinedTextField(
-//                    modifier = Modifier.height(10.dp),
-//                    value = teamName,
-//                    onValueChange = {
-//                        teamName = it
-//                    }
-//                )
-//            }
-//
-//            Row(verticalAlignment = Alignment.CenterVertically) {
-//                Text(text = "团队人员选择")
-//                IconButton(onClick = { /*TODO*/ }) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.icon_right_arrow),
-//                        contentDescription = null
-//                    )
-//                }
-//            }
-//
-//            //创建团队按钮，弃用
-//            TextButton(onClick = {}) {
-//                Text(text = "创建新的团队")
-//            }
-//        }
-//    }
-//}

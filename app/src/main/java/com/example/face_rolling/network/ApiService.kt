@@ -3,6 +3,7 @@ package com.example.face_rolling.network
 import com.example.face_rolling.bean.PhotoBean
 import com.example.face_rolling.bean.RecognizeBean
 import com.example.face_rolling.bean.TeamFileBean
+import com.example.face_rolling.bean.TeamSearchBean
 import com.example.face_rolling.bean.UserBean
 import com.example.face_rolling.bean.VerificationBean
 import okhttp3.MultipartBody
@@ -67,10 +68,12 @@ interface ApiService {
     ): Call<TeamFileBean>
 
 
+    /**
+     * 通过文件创建团队
+     */
     @Multipart
     @POST("creatTeamByFile")
     fun creatTeamByFile(
-        @Part("teamName") name: String,
         @Part file: MultipartBody.Part,
     ): Call<TeamFileBean>
 
@@ -102,8 +105,8 @@ interface ApiService {
     @FormUrlEncoded
     @POST("getTeamInfo")
     fun getTeamInfo(
-        @Field("team_id") id: Int
-    ): Call<UserBean>
+        @Field("id") id: Int
+    ): Call<TeamSearchBean>
 
 
     /*

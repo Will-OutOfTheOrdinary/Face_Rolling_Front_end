@@ -17,10 +17,13 @@ import com.example.face_rolling.data.User.Companion.hjj
 import com.example.face_rolling.data.User.Companion.szx
 import com.example.face_rolling.ui.postLog.person.FACE_RECOGNIZE
 import com.example.face_rolling.ui.postLog.person.NONE
+import java.time.LocalDate
 
 @SuppressLint("MutableCollectionMutableState")
 class MyViewModel : ViewModel() {
     var selectedTab by mutableIntStateOf(0)
+
+    var today by mutableStateOf(LocalDate.now())
 
     var ifCanLogin by mutableStateOf(false)
     var ifLoginAuto by mutableStateOf(false)
@@ -32,6 +35,10 @@ class MyViewModel : ViewModel() {
 
     //BottomSheet
     var ifBottomSheet by mutableStateOf(false)
+
+    //团队人员列表
+    var teamMemberList by mutableStateOf(listOf<User>())
+
 
 
 

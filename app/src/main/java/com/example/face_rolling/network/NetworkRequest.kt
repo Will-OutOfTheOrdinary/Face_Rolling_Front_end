@@ -3,6 +3,7 @@ package com.example.face_rolling.network
 import com.example.face_rolling.bean.PhotoBean
 import com.example.face_rolling.bean.RecognizeBean
 import com.example.face_rolling.bean.TeamFileBean
+import com.example.face_rolling.bean.TeamSearchBean
 import com.example.face_rolling.bean.UserBean
 import com.example.face_rolling.bean.VerificationBean
 import com.example.face_rolling.data.User
@@ -41,8 +42,8 @@ object NetworkRequest {
     fun creatTeam(name: String, teammateString: String): Call<TeamFileBean> =
         service.creatTeam(name, teammateString)
 
-    fun creatTeamByFile(name: String,file:MultipartBody.Part): Call<TeamFileBean> =
-        service.creatTeamByFile(name,file)
+    fun creatTeamByFile(file:MultipartBody.Part): Call<TeamFileBean> =
+        service.creatTeamByFile(file)
 
 
     fun connectImageToPerson(user_id: Int, avatar_file: MultipartBody.Part): Call<UserBean> =
@@ -56,7 +57,7 @@ object NetworkRequest {
 
     fun getTeamInfo(
         team_id: Int
-    ): Call<UserBean> = service.getTeamInfo(team_id)
+    ): Call<TeamSearchBean> = service.getTeamInfo(team_id)
 
 
 

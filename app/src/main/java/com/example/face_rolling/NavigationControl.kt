@@ -16,6 +16,7 @@ import com.example.face_rolling.ui.postLog.message.ChatList
 import com.example.face_rolling.ui.postLog.person.ImageSelectionScreen
 import com.example.face_rolling.ui.postLog.person.Person
 import com.example.face_rolling.ui.postLog.team.Team
+import com.example.face_rolling.ui.postLog.team.TeamMemberListShow
 
 //import com.example.face_rolling.util.photo.MainScreen
 
@@ -38,6 +39,9 @@ fun NavigationControl(viewModel: MyViewModel) {
 
         composable("team") { Team(viewModel = viewModel,navController)}
         composable("image_selected") { ImageSelectionScreen(viewModel = viewModel)}
+        composable("team_list_show") {
+            TeamMemberListShow(viewModel.teamMemberList)
+        }
 
         composable("message") { ChatList(viewModel.chatList) }
 
@@ -62,11 +66,14 @@ fun NavigationControl(viewModel: MyViewModel) {
 
         }
 
-        3 -> {
-            navController.navigate("message"){ popUpTo("team") { inclusive = true }}
-        }
+//        3 -> {
+//            navController.navigate("message"){ popUpTo("team") { inclusive = true }}
+//        }
+//        4 -> {
+//            navController.navigate("person"){ popUpTo("message") { inclusive = true }}
+//        }
         4 -> {
-            navController.navigate("person"){ popUpTo("message") { inclusive = true }}
+            navController.navigate("person"){ popUpTo("team") { inclusive = true }}
         }
     }
 }
